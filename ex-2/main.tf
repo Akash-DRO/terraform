@@ -35,3 +35,16 @@ resource "aws_internet_gateway" "gw" {
       Name = "main gw"   
    }
 }
+
+resource "aws_eip" "eip" {
+   vpc=true
+}
+
+resource "aws_nat_gateway" "gw" {
+   allocation_id = aws_eip.eip.id
+   subnet_id = aws_subnet.subnet-p.id
+   
+   tags = {
+      Name = "NAT gw"
+   }
+}
