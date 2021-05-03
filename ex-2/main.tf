@@ -75,3 +75,20 @@ resource "aws_route_table" "public-route" {
 #   }
 #}
 
+resource "aws_route_table" "private-route" {
+   vpc_id = aws_vpc.main.id
+
+   route {
+   cidr_block = "10.0.2.0/28"
+   gateway_id = aws_nat_gateway.ngw.id
+   }
+
+#   route {
+#   ipv6_cidr_block = "::/0"
+#   egress_only_gateway_id = aws_egress_only_internet_gateway.igw.id
+#   }
+
+   tags = {
+      Name = "private-route"
+   }
+}
