@@ -27,3 +27,11 @@ resource "aws_subnet" "subnet-pi" {
      Name= "subnet-pi"
    }
 }
+
+resource "aws_internet_gateway" "gw" {
+   vpc_id = aws_vpc.main.id
+
+   tags = {
+      Name = "main gw"   
+   }
+}
