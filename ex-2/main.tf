@@ -28,11 +28,11 @@ resource "aws_subnet" "subnet-pi" {
    }
 }
 
-resource "aws_internet_gateway" "gw" {
+resource "aws_internet_gateway" "igw" {
    vpc_id = aws_vpc.main.id
 
    tags = {
-      Name = "main gw"   
+      Name = "igw"
    }
 }
 
@@ -40,11 +40,38 @@ resource "aws_eip" "eip" {
    vpc=true
 }
 
-resource "aws_nat_gateway" "gw" {
+resource "aws_nat_gateway" "ngw" {
    allocation_id = aws_eip.eip.id
    subnet_id = aws_subnet.subnet-p.id
-   
+
    tags = {
-      Name = "NAT gw"
+      Name = "ngw"
    }
 }
+
+resource "aws_route_table" "public-route" {
+   vpc_id = aws_vpc.main.id
+
+   route {
+   cidr_block = "0.0.0.0/0"
+   gateway_id = aws_internet_gateway.igw.id
+   }
+
+#   route {
+#   ipv6_cidr_block = "::/0"
+#   egress_only_gateway_id = aws_egress_only_internet_gateway.igw.id
+#   }
+
+   tags = {
+      Name = "public-route"
+   }
+}     
+
+#resource "aws_default_route_table" "public-route-default" {
+#   default_route_table_id = "aws_vpc.main.default_route_table_id"
+#   
+#   tags = {
+#      Name = "public-route-default"
+#   }
+#}
+
