@@ -93,8 +93,8 @@ resource "aws_route_table" "private-route" {
    }
 }
 
-resource "aws_security_group" "allow_ssh" {
-   name = "allow_ssh"
+resource "aws_security_group" "ssh-p" {
+   name = "ssh-p"
    description = "Allow SSH inbound traffic"
    vpc_id = aws_vpc.main.id
 
@@ -116,6 +116,81 @@ resource "aws_security_group" "allow_ssh" {
    }
 
    tags = {
-      Name = "allow_ssh"
+      Name = "ssh-p"
+   }
+}
+
+resource "aws_security_group" "ssh-pi" {
+   name = "ssh-pi"
+   description = "Allow SSH inbound traffic"
+   vpc_id = aws_vpc.main.id
+
+   ingress {
+      description = "SSH from VPC"
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      cidr_blocks = [aws_vpc.main.cidr_block]
+ #     ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
+   }
+
+   egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+#      ipv6_cidr_blocks = ["::/0"]
+   }
+
+   tags = {
+      Name = "ssh-pi"
+   }
+}
+
+#resource "aws_network_interface" "instance-pub" {
+#   subnet_id = aws_subnet.subnet-p.id
+
+#   tags = {
+#      Name = "network_instance-pub"
+#   }
+#}
+
+#resource "aws_network_interface" "instance-pri" {
+#   subnet_id = aws_subnet.subnet-pi.id
+
+#   tags = {
+#      Name = "network_instance-pri"
+#   }
+#}
+
+resource "aws_instance" "instance-pub" {
+   ami = "ami-0c55b159cbfafe1f0"
+   instance_type = "t2.micro"
+   vpc_security_group_ids = [aws_security_group.ssh-p.id]
+   subnet_id = aws_subnet.subnet-p.id 
+   
+#   network_interface {
+#      network_interface_id = aws_network_interface.instance-pub.id
+#      device_index = 0
+#   } 
+
+   tags = {
+      Name = "instance-pub"
+   }
+}
+
+resource "aws_instance" "instance-pri" {
+   ami = "ami-0c55b159cbfafe1f0"
+   instance_type = "t2.micro"
+   vpc_security_group_ids = [aws_security_group.ssh-pi.id]
+   subnet_id = aws_subnet.subnet-pi.id 
+
+#   network_interface {
+#      network_interface_id = aws_network_interface.instance-pri.id
+#      device_index = 0
+#   }  
+
+   tags = {
+      Name = "instance-pri"
    }
 }
