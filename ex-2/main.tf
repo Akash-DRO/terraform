@@ -4,7 +4,6 @@ provider "aws" {
 resource "aws_vpc" "main" {
    cidr_block = "10.0.0.0/20"
    instance_tenancy = "default"
-   
    tags = {
       Name = "main"
    }
@@ -103,7 +102,7 @@ resource "aws_security_group" "ssh-p" {
       from_port = 22
       to_port = 22
       protocol = "tcp"
-      cidr_blocks = [aws_vpc.main.cidr_block]
+      cidr_blocks = ["0.0.0.0/0"]
  #     ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
    }
  
@@ -168,7 +167,8 @@ resource "aws_instance" "instance-pub" {
    instance_type = "t2.micro"
    vpc_security_group_ids = [aws_security_group.ssh-p.id]
    subnet_id = aws_subnet.subnet-p.id 
-   
+   associate_public_ip_address = true
+
 #   network_interface {
 #      network_interface_id = aws_network_interface.instance-pub.id
 #      device_index = 0
@@ -193,4 +193,9 @@ resource "aws_instance" "instance-pri" {
    tags = {
       Name = "instance-pri"
    }
+}
+
+output "public_ip" {
+  value       = aws_instance.instance-pub.public_ip
+  description = "The public IP of the web server"
 }
