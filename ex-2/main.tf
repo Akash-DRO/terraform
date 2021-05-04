@@ -147,31 +147,32 @@ resource "aws_security_group" "ssh-pi" {
    }
 }
 
-resource "aws_network_interface" "instance-pub" {
-   subnet_id = aws_subnet.subnet-p.id
+#resource "aws_network_interface" "instance-pub" {
+#   subnet_id = aws_subnet.subnet-p.id
 
-   tags = {
-      Name = "network_instance-pub"
-   }
-}
+#   tags = {
+#      Name = "network_instance-pub"
+#   }
+#}
 
-resource "aws_network_interface" "instance-pri" {
-   subnet_id = aws_subnet.subnet-pi.id
+#resource "aws_network_interface" "instance-pri" {
+#   subnet_id = aws_subnet.subnet-pi.id
 
-   tags = {
-      Name = "network_instance-pri"
-   }
-}
+#   tags = {
+#      Name = "network_instance-pri"
+#   }
+#}
 
 resource "aws_instance" "instance-pub" {
    ami = "ami-0c55b159cbfafe1f0"
    instance_type = "t2.micro"
    vpc_security_group_ids = [aws_security_group.ssh-p.id]
+   subnet_id = aws_subnet.subnet-p.id 
    
-   network_interface {
-      network_interface_id = aws_network_interface.instance-pub.id
-      device_index = 0
-   } 
+#   network_interface {
+#      network_interface_id = aws_network_interface.instance-pub.id
+#      device_index = 0
+#   } 
 
    tags = {
       Name = "instance-pub"
@@ -182,11 +183,12 @@ resource "aws_instance" "instance-pri" {
    ami = "ami-0c55b159cbfafe1f0"
    instance_type = "t2.micro"
    vpc_security_group_ids = [aws_security_group.ssh-pi.id]
-    
-   network_interface {
-      network_interface_id = aws_network_interface.instance-pri.id
-      device_index = 0
-   }  
+   subnet_id = aws_subnet.subnet-pi.id 
+
+#   network_interface {
+#      network_interface_id = aws_network_interface.instance-pri.id
+#      device_index = 0
+#   }  
 
    tags = {
       Name = "instance-pri"
