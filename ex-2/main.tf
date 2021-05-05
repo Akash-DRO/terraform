@@ -200,6 +200,7 @@ resource "aws_instance" "instance-pri" {
    instance_type = "t2.micro"
    vpc_security_group_ids = [aws_security_group.ssh-pi.id]
    subnet_id = aws_subnet.subnet-pi.id 
+   key_name = "id_rsa"
 
 #   network_interface {
 #      network_interface_id = aws_network_interface.instance-pri.id
@@ -209,6 +210,11 @@ resource "aws_instance" "instance-pri" {
    tags = {
       Name = "instance-pri"
    }
+}
+
+resource "aws_key_pair" "key_pair" {
+   key_name = "id_rsa"
+   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDg0GDPOzszz3rUTeYLPxpVcHFXBvemTqlJnojfvNwMJ7jVx8Nz2ttyle1+Xkd71FucMLVAUSceI05lBQrb4hMTgYsMdH5cldIUImNy/KEiTN52ZMy89uhoWxXnqqKtKqqakNxHG1z681V3SI9d/RXr29on5yfUgUjVO0hnPIBl58hqXXFys9089ZW8kmH7sux7oDJylyisjGVF5M9kB4AgLUtGywD9T3GlvZEqOCI5nSv/kpUDiZTHPLNB337DC2un9XMzza72T/bAj2202bMbHXlImmoF7yAkV/OHv6YFz7lFyHL3gjr4tjO/kx5uqkTndzmopO9NDahqW7MuwQDP ubuntu@ip-10-0-1-14"
 }
 
 output "public_ip" {
