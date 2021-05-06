@@ -38,18 +38,18 @@ resource "aws_internet_gateway" "igw" {
    }
 }
 
-resource "aws_eip" "eip" {
-   vpc=true
-}
+#resource "aws_eip" "eip" {
+#   vpc=true
+#}
 
-resource "aws_nat_gateway" "ngw" {
-   allocation_id = aws_eip.eip.id
-   subnet_id = aws_subnet.subnet-p.id
-
-   tags = {
-      Name = "ngw"
-   }
-}
+#resource "aws_nat_gateway" "ngw" {
+#   allocation_id = aws_eip.eip.id
+#   subnet_id = aws_subnet.subnet-p.id
+#
+#    tags = {
+#     Name = "ngw"
+#   }
+#}
 
 resource "aws_route_table" "public-route" {
    vpc_id = aws_vpc.main.id
@@ -83,7 +83,7 @@ resource "aws_route_table" "private-route" {
 
    route {
       cidr_block = "0.0.0.0/0"
-      gateway_id = aws_nat_gateway.ngw.id
+      gateway_id = aws_internet_gateway.igw.id
    }
 
 #   route {
